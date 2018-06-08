@@ -20,6 +20,16 @@ module.exports = {
         pathRewrite: {
           '^/api/getDiscList': ''
         }
+      },
+      '/api/getSingerList': {
+        target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        bypass: function(req, res, proxyOptions){
+          req.headers.referer = 'https://y.qq.com/portal/singer_list.html',
+          req.headers.host = 'u.y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getSingerList': ''
+        }
       }
     },
     env: require('./dev.env'),

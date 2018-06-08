@@ -2,7 +2,6 @@ import jsonp from 'common/js/jsonp'
 import axios from 'axios'
 import { commonParams, options } from './config'
 
-
 export function getRecommoned () {
   const url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
   const data = Object.assign({}, commonParams, {

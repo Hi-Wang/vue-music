@@ -14,7 +14,7 @@ export default {
         },
         click: {
             type: Boolean,
-            default: true
+            default: true  //class needsclick 可解决click点击冲突的问题
         },
         data: {
             type: Array,

@@ -93,7 +93,7 @@ export default {
                 snap: true,
                 snapLoop: this.loop,
                 snapThreshold: 0.3,
-                snapSpeed: 400
+                snapSpeed: 400  //class needsclick 可解决click点击冲突的问题
             })
 
             this.slider.on('scrollEnd', () => {
