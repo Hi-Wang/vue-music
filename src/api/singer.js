@@ -2,12 +2,12 @@ import jsonp from 'common/js/jsonp'
 import axios from 'axios'
 import { commonParams, options } from './config'
 
-export function getSingerList() {
+export function getSingerList(index) {
     const url = '/api/getSingerList'
 
     const item = {
         "comm": {'ct': 24, 'cv': 10000},
-        "singerList": {'module': 'Music.SingerListServer', 'method': 'get_singer_list', 'param': {'area': -100,'sex': -100,'genre': -100, 'index': 1, 'sin': 0, 'cur_page': 1}}
+        "singerList": {'module': 'Music.SingerListServer', 'method': 'get_singer_list', 'param': {'area': -100,'sex': -100,'genre': -100, 'index': index, 'sin': 0, 'cur_page': 1}}
     }
     const data = Object.assign({}, commonParams, {
         loginUin: 0,

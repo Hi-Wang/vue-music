@@ -120,7 +120,6 @@ export default {
             this.dots = new Array(this.chlidren.length)
         },
         _play() {
-            console.log(this.currentPageIndex)
             let pageIndex
             if(this.currentPageIndex === -1){
                 this.currentPageIndex = 0
@@ -134,12 +133,10 @@ export default {
             }
             if(pageIndex > this.dots.length){
                 pageIndex = 0
-                console.log('到头了')
             }
             this.timer = setTimeout( () => {
                 this.slider.goToPage(pageIndex, 0, 400)
             }, this.interval)
-            //  console.log(pageIndex)
         }
     },
     destroyed() {
