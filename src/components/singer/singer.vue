@@ -1,12 +1,6 @@
 <template>
     <div class="singer">
-        <list-view :data="singer"></list-view>
-        <!-- <div class="left">
-            index
-        </div>
-        <div class="right">
-            <p v-for="(item, index) in numList" v-on:click="numListClick(item)">{{item.name}}</p>
-        </div> -->
+        <list-view :singer="singer"></list-view>
     </div>
 </template>
 
@@ -15,9 +9,15 @@ import { getSingerList } from 'api/singer'
 import { ERR_OK } from 'api/config'
 import { addClass } from 'common/js/dom'
 import ListView from 'base/listview/listview'
+import Singer from 'common/js/singer'
 
 const HOT_SINGER_LEN = 10
 const HOT_NAME = '热门'
+let map = {
+    title: HOT_NAME,
+    items: []
+}
+
 export default {
     data() {
         return {
@@ -26,19 +26,20 @@ export default {
         }
     },
     created() {
-        let index = -100
-        this._getSingerList(index)
+        this._getSingerList()
     },
     methods: {
-        _getSingerList(index) {
+        _getSingerList() {
 
-            getSingerList(index).then((res) => {
+            getSingerList().then((res) => {
                 console.log(res)
-                if( res.statusText === 'OK' ) {
-                    this.singer = res.data.singerList.data.singerlist
-                    this.numList = res.data.singerList.data.tags.index
-                    this._normalizeSinger(this.singer)
-                    // console.log(this.singer)
+                if( res.data.code === ERR_OK ) {
+                    console.log(111)
+                    let singerlist = res.data.data.list
+                    // this.numList = res.data.singerList.data.tags.index
+                    this.singer = this._normalizeSinger(singerlist)
+                }else{
+                    console.log('歌手列表拉取失败！')
                 }
             })
         },
@@ -51,20 +52,46 @@ export default {
             }
             list.forEach((item, index) => {
                 if(index < HOT_SINGER_LEN) {
-                    map.hot.items.push({
-                        id: '1',
-                        name: 'zhang',
-                        image: ''
-                    })
+                    map.hot.items.push(new Singer({
+                        id: item.Fsinger_mid,
+                        name: item.Fsinger_name
+                    }))
                 }
-
-                // const key = 
+                const key = item.Findex
+                if(!map[key]) {
+                    map[key] = {
+                        title: key,
+                        items: []
+                    }
+                }
+                map[key].items.push(new Singer({
+                    id: item.Fsinger_mid,
+                    name: item.Fsinger_name
+                }))
             });
-        },
-        // 点击字母
-        numListClick(item) {
-            let index = item.id
-            console.log(index)
+
+             let hot = []
+             let ret = []
+             for( let key in map ) {
+                 let val = map[key]
+                 if( val.title.match(/[a-zA-Z]/) ) {
+                     ret.push(val)
+                 }else if( val.title === HOT_NAME ) {
+                     hot.push(val)
+                 }
+             }
+             ret.sort((a ,b) => {
+                 return a.title.charCodeAt(0) - b.title.charCodeAt(0)
+             })
+              console.log(hot.concat(ret))
+             return hot.concat(ret)
+            // list.forEach((item, index) => {
+            //     map.items.push(new Singer({
+            //         id: item.singer_mid,
+            //         name: item.singer_name
+            //     }))
+            // });
+            // this.singer = map.items
         }
     },
     components: {

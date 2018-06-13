@@ -22,7 +22,8 @@ module.exports = {
         }
       },
       '/api/getSingerList': {
-        target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        target: 'https://c.y.qq.com/v8/fcg-bin/v8.fcg',
         bypass: function(req, res, proxyOptions){
           req.headers.referer = 'https://y.qq.com/portal/singer_list.html',
           req.headers.host = 'u.y.qq.com'

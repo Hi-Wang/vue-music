@@ -10,11 +10,19 @@ export function getSingerList(index) {
         "singerList": {'module': 'Music.SingerListServer', 'method': 'get_singer_list', 'param': {'area': -100,'sex': -100,'genre': -100, 'index': index, 'sin': 0, 'cur_page': 1}}
     }
     const data = Object.assign({}, commonParams, {
-        loginUin: 0,
+        // loginUin: 0,
+        // hostUin: 0,
+        // platform: 'yqq',
+        // needNewCode: 0,
+        // data: item
+        channel: 'singer',
+        page: 'list',
+        key: 'all_all_all',
+        pagesize: 100,
+        pagenum: 1,
         hostUin: 0,
-        platform: 'yqq',
         needNewCode: 0,
-        data: item
+        platform: 'yqq'
     })
     console.log(data)
     return axios.get(url, {
