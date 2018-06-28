@@ -1,6 +1,7 @@
 <template>
     <div class="singer">
-        <list-view :singer="singer"></list-view>
+        <list-view @select="selectSinger" :singer="singer"></list-view>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -10,6 +11,7 @@ import { ERR_OK } from 'api/config'
 import { addClass } from 'common/js/dom'
 import ListView from 'base/listview/listview'
 import Singer from 'common/js/singer'
+import { mapMutations } from 'vuex'  //对mutation做的封装（语法糖）
 
 const HOT_SINGER_LEN = 10
 const HOT_NAME = '热门'
@@ -29,14 +31,16 @@ export default {
         this._getSingerList()
     },
     methods: {
+        selectSinger(singer) {  //接收listView的点击事件
+            this.$router.push({
+                path: '/singer/' + singer.id
+            })
+            this.setSinger(singer)
+        },
         _getSingerList() {
-
             getSingerList().then((res) => {
-                console.log(res)
                 if( res.data.code === ERR_OK ) {
-                    console.log(111)
                     let singerlist = res.data.data.list
-                    // this.numList = res.data.singerList.data.tags.index
                     this.singer = this._normalizeSinger(singerlist)
                 }else{
                     console.log('歌手列表拉取失败！')
@@ -83,16 +87,11 @@ export default {
              ret.sort((a ,b) => {
                  return a.title.charCodeAt(0) - b.title.charCodeAt(0)
              })
-              console.log(hot.concat(ret))
              return hot.concat(ret)
-            // list.forEach((item, index) => {
-            //     map.items.push(new Singer({
-            //         id: item.singer_mid,
-            //         name: item.singer_name
-            //     }))
-            // });
-            // this.singer = map.items
-        }
+        },
+        ...mapMutations({
+            setSinger: 'SET_SINGER'
+        })
     },
     components: {
         ListView

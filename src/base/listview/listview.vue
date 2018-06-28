@@ -9,7 +9,7 @@
             <li v-for="group in singer" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul>
-                    <li class="list-group-item" v-for="item in group.items">
+                    <li class="list-group-item" v-for="item in group.items" @click="selectItem(item)">
                         <img class="avatar" v-lazy="item.image">
                         <span class="name">{{item.name}}</span>
                     </li>
@@ -23,9 +23,12 @@
                 <li v-for="(item, index) in shortcutList" class="item" :class="{'current': currentIndex === index}" :data-index="index">{{item}}</li>
             </ul>
         </div>
-        <!-- <ul class="numList">
-            <li v-for="item in numList" v-on:click='numListClick(item)'>{{item.name}}</li>
-        </ul> -->
+        <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+            <h1 class="fixed-title">{{fixedTitle}}</h1>
+        </div>
+        <div v-show="!singer.length" class="loading-container">
+            <loading></loading>
+        </div>
     </scroll>
 </template>
 
@@ -40,6 +43,7 @@ import { addClass, getData } from 'common/js/dom'
 
 const HOT_NAME = '热门'
 const ANCHOR_HEIGHT = 18
+const TITLE_HEIGHT = 30
 let map = {
     title: HOT_NAME,
     items: []
@@ -55,7 +59,8 @@ export default {
     data() {
         return {
             scrollY: -1,
-            currentIndex: 0
+            currentIndex: 0,
+            diff: ''
         }
     },
     created() {
@@ -65,6 +70,9 @@ export default {
         this.probeType = 3
     },
     methods: {
+       selectItem(item) {  //点击派发事件
+           this.$emit('select', item)
+       },    
        onShortcutTouchStart(e) {
            let anchorIndex = getData(e.target, 'index')
            let firstTouch = e.touches[0]
@@ -83,6 +91,15 @@ export default {
            this.scrollY = pos.y
        },
        _scrollTo(index) {
+           if(!index && index !== 0){
+               return
+           }
+        //    处理index的边界情况
+          if ( index < 0 ) {
+              index = 0
+          }else if( index > this.listHeight.length - 2 ) {
+              index = this.listHeight.length - 2
+          }
            this.scrollY = - this.listHeight[index]
            this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
        },
@@ -117,11 +134,21 @@ export default {
                 let height2 = listHeight[i+1]
                 if( -newY >= height1 && -newY < height2 ){
                     this.currentIndex = i
+                    this.diff = height2 + newY
                     return
                 }
             }
             // 当滚动到底部 并且.newY大于最后一个元素上限
             this.currentIndex = listHeight.length - 2
+        },
+        diff(newVal) {
+            let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+            if(this.fixedTop === fixedTop) {
+                return
+            }
+            this.fixedTop = fixedTop
+            //  修改DOM 
+            this.$refs.fixed.style.transform = "translate3d(0, " + fixedTop +"px, 0)"
         }
     },
     computed: {  //计算属性
@@ -129,10 +156,17 @@ export default {
             return this.singer.map( (group) => {
                 return group.title.substr(0, 1)
             })
+        },
+        fixedTitle() {
+            if(this.scrollY > 0) {
+                return ''
+            }
+            return this.singer[this.currentIndex] ? this.singer[this.currentIndex].title : ''
         }
     },
     components: {
-        Scroll
+        Scroll,
+        Loading
     }  
 }
 </script>

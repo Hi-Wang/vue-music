@@ -10,11 +10,6 @@ export function getSingerList(index) {
         "singerList": {'module': 'Music.SingerListServer', 'method': 'get_singer_list', 'param': {'area': -100,'sex': -100,'genre': -100, 'index': index, 'sin': 0, 'cur_page': 1}}
     }
     const data = Object.assign({}, commonParams, {
-        // loginUin: 0,
-        // hostUin: 0,
-        // platform: 'yqq',
-        // needNewCode: 0,
-        // data: item
         channel: 'singer',
         page: 'list',
         key: 'all_all_all',
@@ -30,4 +25,23 @@ export function getSingerList(index) {
     }).then((res) => {
         return Promise.resolve(res)
     })
+}
+
+export function getSingerDetail(singerId) {
+    const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
+
+    console.log(singerId)
+    const data = Object.assign({}, commonParams, {
+        hostUin: 0,
+        needNewCode: 0,
+        platform: 'yqq',
+        order: 'listen',
+        num: 100,
+        begin: 0,
+        songstatus: 1,
+        singermid: singerId,
+        g_tk: 1664029744
+    })
+
+    return jsonp(url, data, options)
 }
