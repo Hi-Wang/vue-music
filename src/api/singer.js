@@ -19,7 +19,6 @@ export function getSingerList(index) {
         needNewCode: 0,
         platform: 'yqq'
     })
-    console.log(data)
     return axios.get(url, {
         params: data
     }).then((res) => {
@@ -29,8 +28,8 @@ export function getSingerList(index) {
 
 export function getSingerDetail(singerId) {
     const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
+    // const url = 'https://c.y.qq.com/cgi-bin/musicu.fcg'
 
-    console.log(singerId)
     const data = Object.assign({}, commonParams, {
         hostUin: 0,
         needNewCode: 0,
@@ -44,4 +43,55 @@ export function getSingerDetail(singerId) {
     })
 
     return jsonp(url, data, options)
+}
+
+export function getSong(songmid) {
+    const url = '/api/getSong'
+
+    const param = {
+        guid: '8697347465',
+        songmid: songmid,
+        songtype: [],
+        uin: 0,
+        loginflag: 0,
+        platform: 23
+    }
+    const comm = {
+        g_tk: 5381,
+        uin: 0,
+        format: "json",
+        ct: 23,
+        cv: 0
+    }
+    const setData = {
+        req_0: {
+            module: 'vkey.GetVkeyServer',
+            method: 'CgiGetVkey',
+            param: {
+                guid: '8697347465',
+                songmid: songmid,
+                songtype: [],
+                uin: 0,
+                loginflag: 0,
+                platform: 23
+            },
+            comm: {
+                g_tk: 5381,
+                uin: 0,
+                format: "json",
+                ct: 23,
+                cv: 0
+            }
+        }
+    }
+
+    const data = Object.assign({}, commonParams, {
+        req_0: JSON.stringify(setData)
+    })
+
+    return axios.post(url, {
+        params: data
+    }).then((res) => {
+        return Promise.resolve(res)
+    })
 }

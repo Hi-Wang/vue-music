@@ -22,7 +22,6 @@ module.exports = {
         }
       },
       '/api/getSingerList': {
-        // target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         target: 'https://c.y.qq.com/v8/fcg-bin/v8.fcg',
         bypass: function(req, res, proxyOptions){
           req.headers.referer = 'https://y.qq.com/portal/singer_list.html',
@@ -30,6 +29,17 @@ module.exports = {
         },
         pathRewrite: {
           '^/api/getSingerList': ''
+        }
+      },
+      '/api/getSong': {
+        target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        bypass: function(req, res, proxyOptions){
+          req.headers[Content-Type] = 'multipart/form-data',
+          req.headers.host = 'u.y.qq.com',
+          req.headers.referer = 'https://y.qq.com/w/singer.html'
+        },
+        pathRewrite: {
+          '^/api/getSong': ''
         }
       }
     },

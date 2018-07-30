@@ -1,6 +1,7 @@
 <template>
     <transition name="silde">
-        <div class="singer-detail"></div>
+        <music-list :songs="songs" :title="title" :bg-image="bgImage"></music-list>
+        <!-- <div class="singer-detail"></div> -->
     </transition>
 </template>
 
@@ -10,21 +11,27 @@ import { getSingerDetail } from 'api/singer'
 import { ERR_OK } from 'api/config';
 
 import { createSong } from 'common/js/song'
+import MusicList from 'components/music-list/music-list';
 
 export default {
     data() {
         return {
-            song: []
+            songs: []
         }
     },
     computed: {
+        title() {
+            return this.singer.name
+        },
+        bgImage() {
+            return this.singer.image
+        },
         ...mapGetters([
             'singer'
         ])
     },
     created() {
         this._getDetail()
-        console.log(this.singer)
     },
     methods: {
         _getDetail() {
@@ -33,9 +40,8 @@ export default {
                 return
             }
             getSingerDetail(this.singer.id).then((res) => {
-                console.log(res)
                 if(res.code === ERR_OK) {
-                    console.log(res.data.list)
+                    this.songs = this._normalizeSongs(res.data.list)
                 }
             })
         },
@@ -49,6 +55,9 @@ export default {
             });
             return ret
         }
+    },
+    components: {
+        MusicList
     }
 }
 </script>
